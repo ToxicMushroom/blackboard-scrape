@@ -1,33 +1,31 @@
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import kotlinx.coroutines.delay
 import org.openqa.selenium.By
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.io.File
 import java.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 
-class Courses(val root: File) {
+class Courses(val parent: File) {
 
     // CourseIds
-    val courses = mutableSetOf<Course>()
+    val courseSet = mutableSetOf<Course>()
+    val logger = logger()
 
     suspend fun scrape() {
 
         val driver = Session.driver
         driver.get("https://toledo.kuleuven.be/404.html")
-        Session.initCookie()
+        Session.initCookie(Session.cookie)
+        driver.get("https://p.cygnus.cc.kuleuven.be/")
+        Session.initCookie(Session.bbCookie)
         driver.get("https://toledo.kuleuven.be/portal/#/home")
         WebDriverWait(driver, Duration.ofSeconds(10))
-            .until { driver: WebDriver -> driver.findElement(By.className("enrollment-clickable-area")) }
+            .until { it.findElement(By.className("enrollment-clickable-area")) }
+
         val elements = driver.findElements(By.className("enrollment-clickable-area"))
             .map { link ->
                 val href = link.getAttribute("href")
-//                val semCircle = link.findElement(By.className("fa-circle-half-stroke"))
-//                val semester = semCircle?.getAttribute("title")?.drop(9)?.toIntOrNull() ?: 1
 
                 val titleSpan = link.findElement(By.className("learning-unit-title"))
                 val text = titleSpan.text
@@ -35,19 +33,23 @@ class Courses(val root: File) {
                 val idRegex = "\\[(.*)\\]".toRegex()
                 val result = idRegex.find(text)
                 val id = result!!.groups[1]!!.value
-                val name = text.dropLast(result.groups[0]!!.range.count()).trim().removeSuffix(":").trim()
+                val courseName = text.dropLast(result.groups[0]!!.range.count()).trim().removeSuffix(":").trim()
 
-                Course(id, name, href, false, 1)
+                val path = parent.absolutePath + "/" + courseName
+                val courseParent = File(path)
+                if (courseParent.mkdir()) println("Created $path")
+                Course(courseParent, id, courseName, href, false, 1)
              }
-        courses.addAll(elements)
 
-        for (course in courses) {
-            val path = root.absolutePath + File.pathSeparator + course.name
-            if (File(path).createNewFile()) println("Created $path")
+        courseSet.addAll(elements)
+
+        for (course in courseSet) {
+
             course.scrape()
             delay(1.seconds)
         }
 
+        logger.info(courseSet.joinToString())
         driver.quit()
     }
 

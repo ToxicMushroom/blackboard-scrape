@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss} %boldCyan(%thread) %boldGreen(%logger{0}) %highlight(%level) %msg%n
+            </pattern>
+            <pattern>%boldGreen(%d{yyyy-MM-dd}) %boldYellow(%d{HH:mm:ss}) %highlight(%5level) %boldGreen(%40.40logger{40}) %gray(|) %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- this block normally goes under the file block -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="io.lettuce.core" level="INFO"/>
+    <logger name="com.zaxxer.hikari" level="INFO"/>
+
+<!--    <root level="ERROR">-->
+<!--        <appender-ref ref="FILE"/>-->
+<!--    </root>-->
+
+</configuration>

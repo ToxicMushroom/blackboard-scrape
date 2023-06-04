@@ -91,6 +91,8 @@ dependencies {
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     implementation("io.ktor:ktor-client-okhttp-jvm:2.2.4")
 
+    implementation("io.github.microutils:kotlin-logging:2.1.23")
+
     testImplementation(kotlin("test"))
 }
 

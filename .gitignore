@@ -40,3 +40,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+.idea
+
+scraped
+bb_cookie
+cookie
+.env

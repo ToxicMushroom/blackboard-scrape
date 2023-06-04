@@ -8,7 +8,7 @@ import org.openqa.selenium.firefox.FirefoxOptions
 import java.io.File
 
 object Session {
-    fun initCookie() {
+    fun initCookie(cookie: String) {
         cookie
             .split("; ")
             .map { it.split("=") }
@@ -19,11 +19,10 @@ object Session {
 
     }
 
+    val ignoredFolders: Set<String> = setOf("Contacts", "Collaborate", "ECTS", "Kalender", "Agenda")
     val cookie = File("./cookie").readText()
+    val bbCookie = File("./bb_cookie").readText()
     val driver = FirefoxDriver(FirefoxOptions())
-
-
-
 
     val httpClient = HttpClient(OkHttp) {
         engine {
