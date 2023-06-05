@@ -94,6 +94,9 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging:2.1.23")
 
     testImplementation(kotlin("test"))
+
+    // https://github.com/furstenheim/copy-down
+    implementation("io.github.furstenheim:copy_down:1.0")
 }
 
 tasks {

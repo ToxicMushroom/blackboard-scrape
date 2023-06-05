@@ -1,3 +1,4 @@
+import io.github.cdimascio.dotenv.DotenvBuilder
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
@@ -18,7 +19,11 @@ object Session {
             }
 
     }
+    val env = DotenvBuilder()
+        .ignoreIfMissing()
+        .load()
 
+    val bbHost: String = env["BB_HOST"]
     val ignoredFolders: Set<String> = setOf("Contacts", "Collaborate", "ECTS", "Kalender", "Agenda")
     val cookie = File("./cookie").readText()
     val bbCookie = File("./bb_cookie").readText()
