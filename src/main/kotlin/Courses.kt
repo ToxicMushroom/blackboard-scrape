@@ -20,7 +20,7 @@ class Courses(val parent: File) {
         driver.get("https://p.cygnus.cc.kuleuven.be/")
         Session.initCookie(Session.bbCookie)
         driver.get("https://toledo.kuleuven.be/portal/#/home")
-        WebDriverWait(driver, Duration.ofSeconds(10))
+        WebDriverWait(driver, Duration.ofSeconds(60))
             .until { it.findElement(By.className("enrollment-clickable-area")) }
 
         val elements = driver.findElements(By.className("enrollment-clickable-area"))

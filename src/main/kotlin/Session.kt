@@ -39,7 +39,7 @@ object Session {
         defaultRequest {
             this.url("https://toledo.kuleuven.be/portal/#/home")
             this.headers {
-                this["Cookie"] = cookie
+                this["Cookie"] = bbCookie
             }
         }
     }
