@@ -35,10 +35,23 @@ open class Item(
     var content: String = ""
     val files: MutableList<BBFile> = mutableListOf()
     val embeddings: MutableList<Embedding> = mutableListOf()
+    val kalturaVidPattern = Regex("/p/(.+?)/sp/.*?/entry_id/(.*?)/version")
+    val kalturaVidTitlePattern = Regex("&title=(.+?)&")
 
     open suspend fun scrape() {
         val details = htmlElement.findElementOrNull(By.className("vtbegenerated"))
         val attachments = htmlElement.findElementOrNull(By.className("attachments"))
+        val kalturaVideo = htmlElement.findElementOrNull(By.tagName("iframe"))
+        if (kalturaVideo != null) {
+            val link = kalturaVideo.getAttribute("src")
+            val title = kalturaVidTitlePattern.find(link)?.groupValues?.get(1)
+            kalturaVidPattern.find(link)?.let { matchResult ->
+                val partnerId = matchResult.groupValues[1]
+                val entryId = matchResult.groupValues[2]
+                embeddings.add(KalturaVideo(parent, title!!, partnerId, entryId))
+            }
+        }
+
         val message = details?.getAttribute("innerHTML")
         if (message != null) {
             val markdown = htmlToMarkdown(message)
@@ -88,6 +101,10 @@ open class Item(
             } catch (t: Throwable) {
                 logger.error { "Failed to create $path" }
             }
+        }
+
+        embeddings.forEach {
+            it.scrape()
         }
     }
 

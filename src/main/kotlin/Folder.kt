@@ -28,6 +28,8 @@ data class Folder(
 
         val els = list.findElements(By.xpath("./li"))
         logger.info { "Found ${els.size} posts in $name" }
+
+        // populate children
         els.forEach {
             val titleWrapEl = it.findElementOrNull(By.cssSelector("* > div.item"))
                 ?: it.findElementOrNull(By.cssSelector("* > h3.item")) ?: return@forEach
@@ -61,6 +63,7 @@ data class Folder(
             delay(100.milliseconds)
         }
 
+        // scrape children and items
         items.forEach {
             it.scrape()
         }
@@ -68,7 +71,5 @@ data class Folder(
         children.forEach {
             it.scrape()
         }
-        // populate children
-        // scrape children and items
     }
 }

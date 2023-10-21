@@ -24,8 +24,8 @@ class Courses(val parent: File) {
             .until { it.findElement(By.className("enrollment-clickable-area")) }
 
         val elements = driver.findElements(By.className("enrollment-clickable-area"))
-            .map { link ->
-                val href = link.getAttribute("href")
+            .mapNotNull { link ->
+                val href = link.getAttribute("href") ?: return@mapNotNull null
 
                 val titleSpan = link.findElement(By.className("learning-unit-title"))
                 val text = titleSpan.text
